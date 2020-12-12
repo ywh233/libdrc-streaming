@@ -1,11 +1,26 @@
+#include <drc/streamer.h>
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/health_check_service_interface.h>
 #include <grpcpp/ext/proto_server_reflection_plugin.h>
+
+#include <iostream>
+#include <memory>
+#include <string>
 
 #include "service.pb.h"
 #include "service.grpc.pb.h"
 
 namespace drc {
+
+namespace {
+
+std::vector<std::string> ToDrcH264Chunks(const H264ChunksRequest& request) {
+  assert(request.chunks_size() < 5);
+  return std::vector<std::string>(request.chunks().begin(),
+                                  request.chunks().end());
+}
+
+}  // namespace
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -13,11 +28,28 @@ using grpc::ServerContext;
 using grpc::Status;
 
 class DrcStreamServiceImpl final : public DrcStreamService::Service {
+ public:
+  DrcStreamServiceImpl() {
+    if (!streamer.Start()) {
+      std::cerr << "Unable to start streamer." << std::endl;
+      assert(false);
+      return;
+    } 
+
+    std::cout << "Streamer is ready." << std::endl;
+  }
+
+  ~DrcStreamServiceImpl() override = default;
+
   Status SendH264Chunks(ServerContext* context,
                         const H264ChunksRequest* request,
-                        H264ChunksResponse* response) {
+                        H264ChunksResponse* response) override {
+    streamer.PushH264Chunks(ToDrcH264Chunks(*request));
     return Status::OK;
   }
+
+ private:
+  drc::Streamer streamer;
 };
 
 void RunServer() {
