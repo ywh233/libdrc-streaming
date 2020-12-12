@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package drc;
+
+service DrcStreamService {
+  rpc SendH264Chunks (H264ChunksRequest) returns (H264ChunksResponse) {}
+}
+
+message H264ChunksRequest {
+  repeated bytes chunks = 1;
+}
+
+message H264ChunksResponse {}
