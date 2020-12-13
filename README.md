@@ -40,22 +40,22 @@ a TCP server from the ground up :)
 1.  Run drc-proxy on Raspberry Pi, then run drc-streamer on the Windows PC.
 1.  Connect your Wii U gamepad to your Raspberry Pi.
 
-### Result
+## Result
 
 If everything is set up correctly, you will see your gamepad's screen changing
 color with a gradient animation. Unfortunately for me the video would soon start
 stuttering and eventually freeze in a few seconds, it probably has to do with
 the TSF drift issue of the Wifi NIC.
 
-### Observations
+## Observations
 
 1.  Software H264 encoding on Raspberry Pi 4 is pretty much unusable as the
-    frame rate will drop to something like 2 fps.
+    frame rate would drop to something like 2 fps.
 1.  Button inputs from the gamepad stay working even after the screen is frozen,
     and the gamepad doesn't seem to turn itself off, unlike what would happen if
     you don't have a patched mac80211 module.
 
-### Thoughts
+## Thoughts
 
 Given libdrc is pretty much unmaintained, and the TSF feature is not quite being
 used in normal situations and is going away with new Wifi NICs, I don't think
