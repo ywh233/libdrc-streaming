@@ -8,6 +8,7 @@ service DrcStreamService {
 
 message H264ChunksRequest {
   repeated bytes chunks = 1;
+  bool is_idr = 2;
 }
 
 message H264ChunksResponse {}
