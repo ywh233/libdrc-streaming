@@ -15,7 +15,7 @@ namespace drc {
 namespace {
 
 std::vector<std::string> ToDrcH264Chunks(const H264ChunksRequest& request) {
-  assert(request.chunks_size() < 5);
+  assert(request.chunks_size() == 5);
   return std::vector<std::string>(request.chunks().begin(),
                                   request.chunks().end());
 }
@@ -44,7 +44,7 @@ class DrcStreamServiceImpl final : public DrcStreamService::Service {
   Status SendH264Chunks(ServerContext* context,
                         const H264ChunksRequest* request,
                         H264ChunksResponse* response) override {
-    streamer.PushH264Chunks(ToDrcH264Chunks(*request));
+    streamer.PushH264Chunks(ToDrcH264Chunks(*request), request->is_idr());
     return Status::OK;
   }
 
