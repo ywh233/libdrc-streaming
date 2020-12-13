@@ -120,20 +120,15 @@ void VideoConverter::Stop() {
   current_conv_.wait();
 }
 
-void VideoConverter::PushFrame(std::vector<byte>* frame,
+std::vector<byte> VideoConverter::ConvertFrame(std::vector<byte>* frame,
                                const VideoConverterParams& params) {
-  if (current_conv_.valid()) {
-    current_conv_.wait();
-  }
-
   // Capture the current frame before spawning the conversion thread: we do not
   // know when the thread will be scheduled, and the user might have destroyed
   // the vector containing the frame before that.
   current_frame_ = std::move(*frame);
   current_params_ = params;
 
-  current_conv_ = std::async(std::launch::async,
-      [=]() { DoConversion(); });
+  return DoConversion();
 }
 
 SwsContext* VideoConverter::GetContextForParams(
@@ -177,7 +172,7 @@ SwsContext* VideoConverter::GetContextForParams(
   return ctx;
 }
 
-void VideoConverter::DoConversion() {
+std::vector<byte> VideoConverter::DoConversion() {
   int y_size = kScreenWidth * kScreenHeight;
   int u_size = y_size / 4;
   int v_size = y_size / 4;
@@ -250,7 +245,7 @@ void VideoConverter::DoConversion() {
   int res = sws_scale(ctx, planes.data(), strides.data(), 0, height,
                       converted_planes, converted_strides);
 
-  done_cb_(&converted);
+  return converted;
 }
 
 }  // namespace drc

@@ -50,15 +50,13 @@ class VideoConverter {
   bool Start();
   void Stop();
 
-  void PushFrame(std::vector<byte>* frame, const VideoConverterParams& params);
-
-  void SetDoneCallback(DoneCallback cb) { done_cb_ = cb; }
+  std::vector<byte> ConvertFrame(std::vector<byte>* frame,
+                                 const VideoConverterParams& params);
 
  private:
   SwsContext* GetContextForParams(const VideoConverterParams& params);
-  void DoConversion();
+  std::vector<byte> DoConversion();
 
-  DoneCallback done_cb_;
   std::map<VideoConverterParams, SwsContext*> ctxs_;
 
   std::future<void> current_conv_;

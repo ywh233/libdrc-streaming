@@ -21,9 +21,8 @@ message(STATUS "Using protobuf ${Protobuf_VERSION}")
 find_package(gRPC CONFIG REQUIRED)
 message(STATUS "Using gRPC ${gRPC_VERSION}")
 
-# pkg_check_modules(LIBDRC REQUIRED IMPORTED_TARGET libdrc)
-# pkg_check_modules(LIBSWSCALE REQUIRED IMPORTED_TARGET libswscale)
-# pkg_check_modules(X264 REQUIRED IMPORTED_TARGET x264)
+include_directories("include/")
 
 add_subdirectory(proto)
 add_subdirectory(src/proxy)
+add_subdirectory(src/streamer)
